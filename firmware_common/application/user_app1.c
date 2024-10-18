@@ -149,19 +149,49 @@ static void UserApp1SM_Idle(void)
   u16Counter--;
   if(u16Counter == 0)
   {
-    /* Reset the counter */
     u16Counter = U16_COUNTER_PERIOD_MS;
-
-    /* Check the current state of the LED and change to the opposite state */
     if(bLightIsOn)
     {
       HEARTBEAT_OFF();
       bLightIsOn = FALSE;
+   
+      //Clear both LCD lines 
+      LcdClearChars(0x00, 0x27);
+      LcdClearChars(0x40, 0x67);
+      
+      // Send LCD message
+      LcdMessage(LINE1_START_ADDR, "LED is OFF");
+
+      // Turn Display on
+      LcdCommand(LCD_DISPLAY_CMD | LCD_DISPLAY_ON);
+
+      // Change display colour 
+      LedOn(LCD_RED);
+      LedOn(LCD_BLUE);
+      LedOn(LCD_GREEN);
     }
     else
     {
       HEARTBEAT_ON();
       bLightIsOn = TRUE;
+
+      // Clear both LCD lines
+      LcdClearChars(0x00, 0x27);
+      LcdClearChars(0x40, 0x67);
+
+      //set cursor to starting position
+      // LcdCommand(LCD_HOME_CMD);
+      
+      // Send LCD message
+      LcdMessage(LINE2_START_ADDR, "LED is ON");
+
+      //Turn on display
+      LcdCommand(LCD_DISPLAY_CMD | LCD_DISPLAY_ON);
+
+      // Change display colour 
+      LedOn(LCD_RED);
+      LedOff(LCD_BLUE);
+      LedOff(LCD_GREEN);
     }
   }
      
